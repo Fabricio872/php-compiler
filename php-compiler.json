@@ -1,0 +1,5 @@
+{
+    "autoload": {
+        "Fabricio872\\PhpCompiler\\": "src/"
+    }
+}
