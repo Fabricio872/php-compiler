@@ -11,7 +11,7 @@ class Compiler
 {
     public function __construct(
         private Config               $config,
-        private FileCrawler          $crawler,
+        private FileService          $crawler,
         private RuleFactoryInterface $factory
     )
     {
@@ -20,17 +20,19 @@ class Compiler
     public function compile(string $classNamespace): void
     {
         $absolutePath = $this->crawler->getAbsolutePath($classNamespace);
-        $classData = file_get_contents($absolutePath);
+        if (file_exists($absolutePath)) {
+            $classData = file_get_contents($absolutePath);
 
-        foreach ($this->config->getRules() as $ruleNamespace) {
-            $rule = $this->factory->build($ruleNamespace);
-            $classReflection = new ReflectionClass($classNamespace);
-            if ($rule->isApplicable($classReflection)) {
-                $classData = $rule->apply($classReflection, $classData);
+            foreach ($this->config->getRules() as $ruleNamespace) {
+                $rule = $this->factory->build($ruleNamespace);
+                $classReflection = new ReflectionClass($classNamespace);
+                if ($rule->isApplicable($classReflection)) {
+                    $classData = $rule->apply($classReflection, $classData);
+                }
             }
-        }
 
-        self::forceFilePutContents($this->crawler->getTargetPath($absolutePath), $classData);
+            self::forceFilePutContents($this->crawler->getTargetPath($absolutePath), $classData);
+        }
     }
 
     private static function forceFilePutContents($filepath, $message): void

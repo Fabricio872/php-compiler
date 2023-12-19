@@ -10,21 +10,22 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
-    name: 'compile-file',
-    description: 'Compiles provided file'
+    name: 'compile',
+    description: 'Compiles all namespaces'
 )]
-class CompileFileCommand extends AbstractCommand
+class CompileCommand extends AbstractCommand
 {
     protected function configure(): void
     {
-        $this
-            ->addArgument('namespace', InputArgument::REQUIRED, 'Provide namespace of file you want to compile');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $symfonyStyle = new SymfonyStyle($input, $output);
+
         $fileCrawler = new FileService($this->getConfig());
         $factory = new RuleFactory();
 
@@ -34,7 +35,20 @@ class CompileFileCommand extends AbstractCommand
             $factory
         );
 
-        $compiler->compile($input->getArgument('namespace'));
+        $paths = [];
+        foreach ($this->getConfig()->getAutoload() as $namespace => $path) {
+            $paths = array_merge($paths, $fileCrawler->getFiles($namespace));
+        }
+
+
+        $progressBar = $symfonyStyle->createProgressBar(count($paths));
+
+        foreach ($paths as $path) {
+            $progressBar->advance();
+            $compiler->compile($fileCrawler->getNamespace($path));
+        }
+        $progressBar->finish();
+        $symfonyStyle->newLine();
 
         return Command::SUCCESS;
     }

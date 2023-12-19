@@ -4,7 +4,7 @@ namespace Fabricio872\PhpCompiler\Model;
 
 class Config
 {
-    private string $compiledSrc = 'compiled/';
+    private string $compiledSrc = '/compiled';
 
     /** @var array <int, string> */
     private array $rules = [];

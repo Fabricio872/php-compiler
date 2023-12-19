@@ -3,7 +3,7 @@
 namespace Fabricio872\PhpCompilerTests;
 
 use Fabricio872\PhpCompiler\Model\Config;
-use Fabricio872\PhpCompiler\Service\FileCrawler;
+use Fabricio872\PhpCompiler\Service\FileService;
 use PHPUnit\Framework\TestCase;
 
 class FileCrawlerTest extends TestCase
@@ -11,7 +11,7 @@ class FileCrawlerTest extends TestCase
 
     public function testGetIterator()
     {
-        $fileCrawler = new FileCrawler(
+        $fileCrawler = new FileService(
             (new Config())
                 ->setAutoload(['Fabricio872\\PhpCompiler\\' => 'src/'])
         );
