@@ -1,8 +1,7 @@
 <?php
 
-namespace Rules;
+namespace Fabricio872\PhpCompiler\Rules;
 
-use Fabricio872\PhpCompiler\Rules\RuleInterface;
 use Override;
 use ReflectionClass;
 

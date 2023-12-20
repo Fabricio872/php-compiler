@@ -55,7 +55,9 @@ class FileService
     {
         foreach ($this->config->getAutoload() as $namespacePrefix => $dir) {
             if (s($namespace)->startsWith($namespacePrefix)) {
-                $parsed = s($namespace)->replace($namespacePrefix, sprintf(
+                $parsed = s($namespace)->replace(
+                    $namespacePrefix,
+                    sprintf(
                         '%s/%s',
                         $this->getProjectRoot(),
                         $dir
@@ -81,6 +83,6 @@ class FileService
 
     public function getProjectRoot(): string
     {
-        return realpath(__DIR__ . '/../../');
+        return dirname(COMPOSER_INSTALL, 2);
     }
 }

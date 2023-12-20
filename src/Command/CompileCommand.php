@@ -18,10 +18,6 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 class CompileCommand extends AbstractCommand
 {
-    protected function configure(): void
-    {
-    }
-
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $symfonyStyle = new SymfonyStyle($input, $output);

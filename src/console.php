@@ -1,14 +1,43 @@
 <?php
 
-require_once __DIR__.'/../vendor/autoload.php';
+if (isset($GLOBALS['_composer_autoload_path'])) {
+    define('COMPOSER_INSTALL', $GLOBALS['_composer_autoload_path']);
+
+    unset($GLOBALS['_composer_autoload_path']);
+} else {
+    foreach (array(__DIR__ . '/../../autoload.php', __DIR__ . '/../vendor/autoload.php', __DIR__ . '/vendor/autoload.php') as $file) {
+        if (file_exists($file)) {
+            define('COMPOSER_INSTALL', $file);
+
+            break;
+        }
+    }
+
+    unset($file);
+}
+
+if (!defined('COMPOSER_INSTALL')) {
+    fwrite(
+        STDERR,
+        'You need to set up the project dependencies using Composer:' . PHP_EOL . PHP_EOL .
+        '    composer install' . PHP_EOL . PHP_EOL .
+        'You can learn all about Composer on https://getcomposer.org/.' . PHP_EOL
+    );
+
+    die(1);
+}
+
+require_once COMPOSER_INSTALL;
 
 use Fabricio872\PhpCompiler\Command\CompileCommand;
 use Fabricio872\PhpCompiler\Command\CompileFileCommand;
+use Fabricio872\PhpCompiler\Command\ListRules;
 use Symfony\Component\Console\Application;
 
 $application = new Application();
 
 $application->add(new CompileFileCommand());
 $application->add(new CompileCommand());
+$application->add(new ListRules());
 
 $application->run();
