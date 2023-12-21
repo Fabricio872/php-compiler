@@ -64,9 +64,10 @@ class FileService
                     )
                 )->replace('\\', '/');
                 if (is_file(sprintf('%s.php', $parsed))) {
-                    return realpath(sprintf('%s.php', $parsed));
+                    $parsed = sprintf('%s.php', $parsed);
+                    return realpath($parsed)?: throw new Exception(sprintf("File \"%s\" does not exist", $parsed));
                 }
-                return realpath($parsed);
+                return realpath($parsed)?: throw new Exception(sprintf("Directory \"%s\" does not exist", $parsed));
             }
         }
         throw new Exception(sprintf("Namespace '%s' not found in project", $namespace));
@@ -83,6 +84,6 @@ class FileService
 
     public function getProjectRoot(): string
     {
-        return dirname(COMPOSER_INSTALL, 2);
+        return dirname('./');
     }
 }
