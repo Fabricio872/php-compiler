@@ -1,8 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Fabricio872\PhpCompiler\Service;
 
-use Exception;
 use Fabricio872\PhpCompiler\Factories\RuleFactoryInterface;
 use Fabricio872\PhpCompiler\Model\Config;
 use ReflectionClass;
@@ -10,11 +11,10 @@ use ReflectionClass;
 class Compiler
 {
     public function __construct(
-        private Config               $config,
-        private FileService          $crawler,
-        private RuleFactoryInterface $factory
-    )
-    {
+        private readonly Config               $config,
+        private readonly FileService          $crawler,
+        private readonly RuleFactoryInterface $factory
+    ) {
     }
 
     public function compile(string $classNamespace): void
@@ -38,11 +38,11 @@ class Compiler
 
     private static function forceFilePutContents($filepath, $message): void
     {
-        $isInFolder = preg_match("/^(.*)\/([^\/]+)$/", $filepath, $filepathMatches);
+        $isInFolder = preg_match("/^(.*)\/([^\/]+)$/", (string) $filepath, $filepathMatches);
         if ($isInFolder) {
             $folderName = $filepathMatches[1];
             $fileName = $filepathMatches[2];
-            if (!is_dir($folderName)) {
+            if (! is_dir($folderName)) {
                 mkdir($folderName, 0777, true);
             }
         }

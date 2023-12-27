@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Fabricio872\PhpCompiler\Rules;
 
 use Override;
@@ -18,5 +20,4 @@ class EmptyRule implements RuleInterface
     {
         return $classData;
     }
-
 }

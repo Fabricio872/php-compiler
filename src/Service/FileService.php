@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Fabricio872\PhpCompiler\Service;
 
 use Exception;
@@ -13,13 +15,11 @@ use function Symfony\Component\String\s;
 class FileService
 {
     public function __construct(
-        private Config $config
-    )
-    {
+        private readonly Config $config
+    ) {
     }
 
     /**
-     * @param string $namespace
      * @return array<int, string>
      * @throws Exception
      */
@@ -40,7 +40,7 @@ class FileService
     {
         foreach ($this->config->getAutoload() as $namespace => $src) {
             if (s($filename)->after(self::getProjectRoot())->startsWith(s($src)->prepend('/'))) {
-                return s($filename)
+                return (string)s($filename)
                     ->trimStart(self::getProjectRoot() . $src)
                     ->replace('/', '\\')
                     ->trimEnd('.php')
@@ -65,9 +65,9 @@ class FileService
                 )->replace('\\', '/');
                 if (is_file(sprintf('%s.php', $parsed))) {
                     $parsed = sprintf('%s.php', $parsed);
-                    return realpath($parsed)?: throw new Exception(sprintf("File \"%s\" does not exist", $parsed));
+                    return realpath($parsed) ?: throw new Exception(sprintf("File \"%s\" does not exist", $parsed));
                 }
-                return realpath($parsed)?: throw new Exception(sprintf("Directory \"%s\" does not exist", $parsed));
+                return realpath((string)$parsed) ?: throw new Exception(sprintf("Directory \"%s\" does not exist", $parsed));
             }
         }
         throw new Exception(sprintf("Namespace '%s' not found in project", $namespace));

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Fabricio872\PhpCompiler\Command;
 
 use Fabricio872\PhpCompiler\Factories\RuleFactory;
