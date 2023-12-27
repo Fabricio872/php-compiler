@@ -21,6 +21,7 @@ class Compiler
     {
         $absolutePath = $this->crawler->getAbsolutePath($classNamespace);
         if (file_exists($absolutePath)) {
+            copy($absolutePath, $this->crawler->getTargetPath($absolutePath));
             $classData = file_get_contents($absolutePath);
 
             foreach ($this->config->getRules() as $ruleNamespace) {
