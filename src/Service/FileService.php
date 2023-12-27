@@ -39,7 +39,7 @@ class FileService
     public function getNamespace(string $filename): string
     {
         foreach ($this->config->getAutoload() as $namespace => $src) {
-            if (s($filename)->trimStart(self::getProjectRoot())->startsWith($src)) {
+            if (s($filename)->after(self::getProjectRoot())->startsWith(s($src)->prepend('/'))) {
                 return s($filename)
                     ->trimStart(self::getProjectRoot() . $src)
                     ->replace('/', '\\')
@@ -84,6 +84,6 @@ class FileService
 
     public static function getProjectRoot(): string
     {
-        return realpath('./');
+        return getcwd();
     }
 }
