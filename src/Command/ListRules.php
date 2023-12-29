@@ -21,7 +21,7 @@ class ListRules extends AbstractCommand
         $symfonyStyle = new SymfonyStyle($input, $output);
 
         $i = 0;
-        $symfonyStyle->table(["#", "Rule"], array_map(fn($item) => [$i++, $item], $this->getConfig()->getRules()));
+        $symfonyStyle->table(["#", "Rule"], array_map(fn ($item) => [$i++, $item], $this->getConfig()->getRules()));
 
         return Command::SUCCESS;
     }

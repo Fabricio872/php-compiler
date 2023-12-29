@@ -16,7 +16,7 @@ class AbstractCommand extends Command
 {
     private const CONFIG_FILE_NAME = 'php-compiler.json';
 
-    private function getSerializer()
+    private function getSerializer(): Serializer
     {
         $normalizers = [new ObjectNormalizer()];
         $encoders = [new JsonEncoder()];
