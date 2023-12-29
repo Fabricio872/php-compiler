@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Fabricio872\PhpCompiler\Command;
 
 use Exception;
@@ -14,7 +16,7 @@ class AbstractCommand extends Command
 {
     private const CONFIG_FILE_NAME = 'php-compiler.json';
 
-    private function getSerializer()
+    private function getSerializer(): Serializer
     {
         $normalizers = [new ObjectNormalizer()];
         $encoders = [new JsonEncoder()];
@@ -24,10 +26,9 @@ class AbstractCommand extends Command
 
     protected function getConfig(): Config
     {
-        if (!file_exists(FileService::getProjectRoot() . DIRECTORY_SEPARATOR . self::CONFIG_FILE_NAME)) {
+        if (! file_exists(FileService::getProjectRoot() . DIRECTORY_SEPARATOR . self::CONFIG_FILE_NAME)) {
             throw new Exception('Compiler is not initialized please run "init command"');
         }
-
 
         return $this->getSerializer()->deserialize(
             file_get_contents(self::CONFIG_FILE_NAME),

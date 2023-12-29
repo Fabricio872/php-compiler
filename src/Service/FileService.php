@@ -1,8 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Fabricio872\PhpCompiler\Service;
 
 use Exception;
+use Fabricio872\PhpCompiler\Exceptions\ClassNotFoundException;
+use Fabricio872\PhpCompiler\Exceptions\ShouldNotHappenException;
 use Fabricio872\PhpCompiler\Model\Config;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -13,13 +17,11 @@ use function Symfony\Component\String\s;
 class FileService
 {
     public function __construct(
-        private Config $config
-    )
-    {
+        private readonly Config $config
+    ) {
     }
 
     /**
-     * @param string $namespace
      * @return array<int, string>
      * @throws Exception
      */
@@ -36,15 +38,25 @@ class FileService
         return $fileList;
     }
 
+    /**
+     * @return class-string
+     * @throws ShouldNotHappenException
+     */
     public function getNamespace(string $filename): string
     {
         foreach ($this->config->getAutoload() as $namespace => $src) {
             if (s($filename)->after(self::getProjectRoot())->startsWith(s($src)->prepend('/'))) {
-                return s($filename)
+                $generatedNamespace = s($filename)
                     ->trimStart(self::getProjectRoot() . $src)
                     ->replace('/', '\\')
                     ->trimEnd('.php')
-                    ->prepend($namespace);
+                    ->prepend($namespace)
+                    ->toString();
+                if (! class_exists($generatedNamespace)) {
+                    throw new ClassNotFoundException($generatedNamespace);
+                }
+
+                return $generatedNamespace;
             }
         }
 
@@ -65,9 +77,9 @@ class FileService
                 )->replace('\\', '/');
                 if (is_file(sprintf('%s.php', $parsed))) {
                     $parsed = sprintf('%s.php', $parsed);
-                    return realpath($parsed)?: throw new Exception(sprintf("File \"%s\" does not exist", $parsed));
+                    return realpath($parsed) ?: throw new Exception(sprintf("File \"%s\" does not exist", $parsed));
                 }
-                return realpath($parsed)?: throw new Exception(sprintf("Directory \"%s\" does not exist", $parsed));
+                return realpath((string) $parsed) ?: throw new Exception(sprintf("Directory \"%s\" does not exist", $parsed));
             }
         }
         throw new Exception(sprintf("Namespace '%s' not found in project", $namespace));
@@ -79,11 +91,14 @@ class FileService
             $this->config->getCompiledSrc(),
             strlen(self::getProjectRoot()),
             0
-        );
+        )->toString();
     }
 
     public static function getProjectRoot(): string
     {
+        if (! getcwd()) {
+            throw new ShouldNotHappenException();
+        }
         return getcwd();
     }
 }

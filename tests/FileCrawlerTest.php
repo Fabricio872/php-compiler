@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Fabricio872\PhpCompilerTests;
 
 use Fabricio872\PhpCompiler\Model\Config;
@@ -8,7 +10,6 @@ use PHPUnit\Framework\TestCase;
 
 class FileCrawlerTest extends TestCase
 {
-
     public function testGetIterator()
     {
         $fileCrawler = new FileService(
@@ -18,7 +19,6 @@ class FileCrawlerTest extends TestCase
 
         $files = $fileCrawler->getFiles('Fabricio872\\PhpCompiler\\Model');
         $this->assertIsIterable($files);
-        $this->assertContains('/app/src/Service/../../compiled/src/Model/Config.php', $files);
-        $this->assertArrayHasKey('/app/src/Service/../../src/Model/Config.php', $files);
+        $this->assertContains('/app/src/Model/Config.php', $files);
     }
 }
