@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Fabricio872\PhpCompiler\Service;
 
+use Fabricio872\PhpCompiler\Exceptions\ClassNotFoundException;
 use Fabricio872\PhpCompiler\Exceptions\FileNotFoundException;
 use Fabricio872\PhpCompiler\Factories\RuleFactoryInterface;
 use Fabricio872\PhpCompiler\Model\Config;
@@ -14,21 +15,21 @@ class Compiler
 {
     public function __construct(
         private readonly Config               $config,
-        private readonly FileService          $crawler,
+        private readonly FileService          $fileService,
         private readonly RuleFactoryInterface $factory
     ) {
     }
 
     /**
-     * @param class-string $classNamespace
+     * @param string $classNamespace
      * @return void
      * @throws ReflectionException
      */
     public function compile(string $classNamespace): void
     {
-        $absolutePath = $this->crawler->getAbsolutePath($classNamespace);
+        $absolutePath = $this->fileService->getAbsolutePath($classNamespace);
         if (file_exists($absolutePath)) {
-            copy($absolutePath, $this->crawler->getTargetPath($absolutePath));
+            copy($absolutePath, $this->fileService->getTargetPath($absolutePath));
             $classData = file_get_contents($absolutePath);
 
             if (! $classData) {
@@ -37,13 +38,21 @@ class Compiler
 
             foreach ($this->config->getRules() as $ruleNamespace) {
                 $rule = $this->factory->build($ruleNamespace);
+                if (! (
+                    class_exists($classNamespace)
+                    || interface_exists($classNamespace)
+                    || enum_exists($classNamespace)
+                    || trait_exists($classNamespace)
+                )) {
+                    throw new ClassNotFoundException($classNamespace);
+                }
                 $classReflection = new ReflectionClass($classNamespace);
                 if ($rule->isApplicable($classReflection)) {
                     $classData = $rule->apply($classReflection, $classData);
                 }
             }
 
-            self::forceFilePutContents($this->crawler->getTargetPath($absolutePath), $classData);
+            self::forceFilePutContents($this->fileService->getTargetPath($absolutePath), $classData);
         }
     }
 

@@ -41,33 +41,16 @@ class FileService
         return $fileList;
     }
 
-    /**
-     * @return class-string
-     * @throws ClassNotFoundException
-     * @throws NoNamespaceFoundException
-     * @throws ShouldNotHappenException
-     */
     public function getNamespace(string $filename): string
     {
         foreach ($this->config->getAutoload() as $namespace => $src) {
             if (s($filename)->after(self::getProjectRoot())->startsWith(s($src)->prepend('/'))) {
-                $generatedNamespace = s($filename)
+                return s($filename)
                     ->trimStart(self::getProjectRoot() . $src)
                     ->replace('/', '\\')
                     ->trimEnd('.php')
                     ->prepend($namespace)
                     ->toString();
-
-                if (! (
-                    class_exists($generatedNamespace)
-                    || interface_exists($generatedNamespace)
-                    || enum_exists($generatedNamespace)
-                    || trait_exists($generatedNamespace)
-                )) {
-                    throw new ClassNotFoundException($generatedNamespace);
-                }
-
-                return $generatedNamespace;
             }
         }
 

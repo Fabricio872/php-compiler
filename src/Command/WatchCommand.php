@@ -90,6 +90,7 @@ class WatchCommand extends AbstractCommand
         try {
             $compiler->compile($this->fileService->getNamespace($path));
         } catch (Exception $exception) {
+            $this->symfonyStyle->title(sprintf("In %s line %s:", $exception->getFile(), $exception->getLine()));
             $this->symfonyStyle->error($exception->getMessage());
         }
 
