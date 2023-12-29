@@ -27,7 +27,7 @@ class AbstractCommand extends Command
     protected function getConfig(): Config
     {
         if (! file_exists(FileService::getProjectRoot() . DIRECTORY_SEPARATOR . self::CONFIG_FILE_NAME)) {
-            throw new Exception('Compiler is not initialized please run "init command"');
+            throw new CompilerNotInitializedException();
         }
 
         return $this->getSerializer()->deserialize(

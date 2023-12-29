@@ -6,6 +6,9 @@ namespace Fabricio872\PhpCompiler\Service;
 
 use Exception;
 use Fabricio872\PhpCompiler\Exceptions\ClassNotFoundException;
+use Fabricio872\PhpCompiler\Exceptions\DirectoryNotFoundException;
+use Fabricio872\PhpCompiler\Exceptions\FileNotFoundException;
+use Fabricio872\PhpCompiler\Exceptions\NoNamespaceFoundException;
 use Fabricio872\PhpCompiler\Exceptions\ShouldNotHappenException;
 use Fabricio872\PhpCompiler\Model\Config;
 use RecursiveDirectoryIterator;
@@ -60,7 +63,7 @@ class FileService
             }
         }
 
-        throw new Exception(sprintf("No namespace found for file: %s", $filename));
+        throw new NoNamespaceFoundException($filename);
     }
 
     public function getAbsolutePath(string $namespace): string
@@ -77,12 +80,12 @@ class FileService
                 )->replace('\\', '/');
                 if (is_file(sprintf('%s.php', $parsed))) {
                     $parsed = sprintf('%s.php', $parsed);
-                    return realpath($parsed) ?: throw new Exception(sprintf("File \"%s\" does not exist", $parsed));
+                    return realpath($parsed) ?: throw new FileNotFoundException($parsed);
                 }
-                return realpath((string) $parsed) ?: throw new Exception(sprintf("Directory \"%s\" does not exist", $parsed));
+                return realpath((string) $parsed) ?: throw new DirectoryNotFoundException($parsed->toString());
             }
         }
-        throw new Exception(sprintf("Namespace '%s' not found in project", $namespace));
+        throw new NoNamespaceFoundException($namespace);
     }
 
     public function getTargetPath(string $source): string
