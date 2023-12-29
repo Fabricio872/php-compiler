@@ -23,25 +23,25 @@ class CompileCommand extends AbstractCommand
     {
         $symfonyStyle = new SymfonyStyle($input, $output);
 
-        $fileCrawler = new FileService($this->getConfig());
+        $fileService = new FileService($this->getConfig());
         $factory = new RuleFactory();
 
         $compiler = new Compiler(
             $this->getConfig(),
-            $fileCrawler,
+            $fileService,
             $factory
         );
 
         $paths = [];
         foreach ($this->getConfig()->getAutoload() as $namespace => $path) {
-            $paths = array_merge($paths, $fileCrawler->getFiles($namespace));
+            $paths = array_merge($paths, $fileService->getFiles($namespace));
         }
 
         $progressBar = $symfonyStyle->createProgressBar(count($paths));
 
         foreach ($paths as $path) {
             $progressBar->advance();
-            $compiler->compile($fileCrawler->getNamespace($path));
+            $compiler->compile($fileService->getNamespace($path));
         }
         $progressBar->finish();
         $symfonyStyle->newLine();

@@ -43,6 +43,8 @@ class FileService
 
     /**
      * @return class-string
+     * @throws ClassNotFoundException
+     * @throws NoNamespaceFoundException
      * @throws ShouldNotHappenException
      */
     public function getNamespace(string $filename): string
@@ -55,7 +57,13 @@ class FileService
                     ->trimEnd('.php')
                     ->prepend($namespace)
                     ->toString();
-                if (! class_exists($generatedNamespace)) {
+
+                if (! (
+                    class_exists($generatedNamespace)
+                    || interface_exists($generatedNamespace)
+                    || enum_exists($generatedNamespace)
+                    || trait_exists($generatedNamespace)
+                )) {
                     throw new ClassNotFoundException($generatedNamespace);
                 }
 

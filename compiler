@@ -33,6 +33,7 @@ require_once COMPOSER_INSTALL;
 use Fabricio872\PhpCompiler\Command\CompileCommand;
 use Fabricio872\PhpCompiler\Command\CompileFileCommand;
 use Fabricio872\PhpCompiler\Command\ListRules;
+use Fabricio872\PhpCompiler\Command\WatchCommand;
 use Symfony\Component\Console\Application;
 
 $application = new Application();
@@ -40,5 +41,6 @@ $application = new Application();
 $application->add(new CompileFileCommand());
 $application->add(new CompileCommand());
 $application->add(new ListRules());
+$application->add(new WatchCommand());
 
 $application->run();
