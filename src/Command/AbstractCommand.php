@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Fabricio872\PhpCompiler\Command;
 
-use Exception;
 use Fabricio872\PhpCompiler\Model\Config;
 use Fabricio872\PhpCompiler\Service\FileService;
 use Symfony\Component\Console\Command\Command;
