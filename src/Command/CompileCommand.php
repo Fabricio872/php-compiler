@@ -49,7 +49,6 @@ class CompileCommand extends AbstractCommand
         $progressBar->finish();
         $symfonyStyle->newLine();
         $symfonyStyle->writeln(sprintf('finished in %sms', $stopwatch->stop('compiling')->getDuration()));
-        $symfonyStyle->newLine();
 
         return Command::SUCCESS;
     }
