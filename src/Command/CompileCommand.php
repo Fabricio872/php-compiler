@@ -12,6 +12,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Stopwatch\Stopwatch;
 
 #[AsCommand(
     name: 'compile',
@@ -22,6 +23,8 @@ class CompileCommand extends AbstractCommand
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $symfonyStyle = new SymfonyStyle($input, $output);
+        $stopwatch = new Stopwatch();
+        $stopwatch->start('compiling');
 
         $fileService = new FileService($this->getConfig());
         $factory = new RuleFactory();
@@ -44,6 +47,8 @@ class CompileCommand extends AbstractCommand
             $compiler->compile($fileService->getNamespace($path));
         }
         $progressBar->finish();
+        $symfonyStyle->newLine();
+        $symfonyStyle->writeln(sprintf('finished in %sms', $stopwatch->stop('compiling')->getDuration()));
         $symfonyStyle->newLine();
 
         return Command::SUCCESS;

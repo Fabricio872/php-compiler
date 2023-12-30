@@ -12,7 +12,6 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\Stopwatch\Stopwatch;
 
 #[AsCommand(
     name: 'watch',
@@ -42,11 +41,8 @@ class WatchCommand extends AbstractCommand
 
     private function compileAll(): void
     {
-        $stopwatch = new Stopwatch();
-        $stopwatch->start('compiling');
         $this->symfonyStyle->writeln(sprintf('[%s] compiling...', (new DateTime())->format('H:i:s')));
         shell_exec(realpath(__DIR__ . '/../../compiler') . ' compile');
         $this->symfonyStyle->newLine();
-        $this->symfonyStyle->writeln(sprintf('finished in %sms', $stopwatch->stop('compiling')->getDuration()));
     }
 }
