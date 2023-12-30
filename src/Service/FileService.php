@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Fabricio872\PhpCompiler\Service;
 
 use Exception;
-use Fabricio872\PhpCompiler\Exceptions\ClassNotFoundException;
 use Fabricio872\PhpCompiler\Exceptions\DirectoryNotFoundException;
 use Fabricio872\PhpCompiler\Exceptions\FileNotFoundException;
 use Fabricio872\PhpCompiler\Exceptions\NoNamespaceFoundException;

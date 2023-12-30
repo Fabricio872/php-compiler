@@ -5,11 +5,12 @@ declare(strict_types=1);
 namespace Fabricio872\PhpCompiler\Service;
 
 use Fabricio872\PhpCompiler\Exceptions\ClassNotFoundException;
+use Fabricio872\PhpCompiler\Exceptions\DirectoryNotFoundException;
 use Fabricio872\PhpCompiler\Exceptions\FileNotFoundException;
+use Fabricio872\PhpCompiler\Exceptions\NoNamespaceFoundException;
 use Fabricio872\PhpCompiler\Factories\RuleFactoryInterface;
 use Fabricio872\PhpCompiler\Model\Config;
 use ReflectionClass;
-use ReflectionException;
 
 class Compiler
 {
@@ -21,9 +22,11 @@ class Compiler
     }
 
     /**
-     * @param string $classNamespace
      * @return void
-     * @throws ReflectionException
+     * @throws ClassNotFoundException
+     * @throws FileNotFoundException
+     * @throws DirectoryNotFoundException
+     * @throws NoNamespaceFoundException
      */
     public function compile(string $classNamespace): void
     {
